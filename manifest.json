@@ -1,0 +1,37 @@
+{
+    "name": "郝泽祥",
+    "version": "1.0.0",
+    "description": "new Chrome Plugin",
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
+    },
+    "permissions": [
+        "storage",
+        "declarativeContent",
+        "activeTab",
+        "http://*/",
+        "bookmarks",
+        "tabs",
+        "history"
+    ],
+    "content_scripts": [
+        {
+            "matches": ["*://www.baidu.com/"],
+            "js": ["js/cannot_touch.js"]
+        }
+    ],
+    "page_action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "images/yingtao.png",
+            "32": "images/caomei.png",
+            "48": "images/pingguo.png",
+            "128": "images/pingguo.png"
+        }
+    },
+    "options_page": "options.html",
+    "manifest_version": 2
+}
