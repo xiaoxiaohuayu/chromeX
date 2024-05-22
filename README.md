@@ -1,5 +1,4 @@
-这个一个模拟的谷歌插件dome，
-谷歌插件的书籍链接：
-http://www.ituring.com.cn/book/miniarticle/60212
-chromeX.crx 是打包好的
-2019.07.31 学习记录
+#### 谷歌插件
+2024年5月22日 小记插件，基本功能，以拖拽、右击的方式进行文本、图片保存到本地
+##### 文档地址
+https://developer.chrome.com/docs/extensions/get-started/tutorial/scripts-activetab?hl=zh-cn
