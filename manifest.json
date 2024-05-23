@@ -4,10 +4,10 @@
     "description": "临时记录、临时保存的便签📝",
     "version": "1.0",
     "action": {
-        "default_popup": "hello.html",
+//        "default_popup": "hello.html",
         "default_icon": "hello_extensions.png"
     },
-    "permissions": ["activeTab","scripting","commands"],
+    "permissions": ["activeTab","scripting","commands","clipboardRead","clipboardWrite"],
     "background": {
         "service_worker": "background.js"
     },
