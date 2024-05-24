@@ -1,3 +1,4 @@
+const targetPageUrl = 'https://www.baidu.com'
 const offscreenCanvas = new OffscreenCanvas(16, 16);
 const ctx = offscreenCanvas.getContext('2d');
 // 设置初始颜色
@@ -20,6 +21,22 @@ function draw() {
     chrome.action.setIcon({imageData: imageData}, () => { /* ... */ });
 
 }
+let tabId = null;
+const TABID= 'hao'
+chrome.windows.onFocusChanged.addListener((windowId) => {
+    console.log('当前激活页面windowId',windowId)
+    getRegisteredScripts()
+    // tabid
+    chrome.tabs.query({},(tab)=>{
+        console.log('tabid',tab)
+        tab.map((e)=>{
+            if(e.active && e.url.startsWith(targetPageUrl)){
+                tabId = e.id
+            }
+        })
+    })
+});
+
 chrome.runtime.onInstalled.addListener(() => {
     chrome.action.setBadgeText({
         text: "🐒",
@@ -33,16 +50,60 @@ chrome.runtime.onInstalled.addListener(() => {
     //     draw();
     // },1000)
 });
-// const extensions = 'https://www.baidu.com'
-//
-/*
+/**
+* 注册
+* */
+const registerScripts = () =>{
+    console.log('开始注册css')
+    chrome.scripting.registerContentScripts(
+        [
+            {
+                id:'hao',
+                allFrames: true,
+                css:['index.css'],
+                runAt:"document_start",
+                matches: ["https://*.baidu.com/*"]
+            }
+        ],
+        (registerResult)=>{
+            console.log(registerResult)
+        }
+    )
+}
+/**
+* 获取注册的脚本
+* */
+const getRegisteredScripts = () =>{
+    chrome.scripting.getRegisteredContentScripts(
+        {},
+        (getReg)=>{
+            console.log('获取注册的脚本成功',getReg)
+        }
+    )
+}
+/**
+ * 移除注入的脚本
+ * */
+const removeScripts = () =>{
+    chrome.scripting.unregisterContentScripts(
+        {
+            css:['index.css'],
+            allFrames: true,
+            runAt:"document_start"
+        },
+        (remove)=>{
+            console.log('移除脚本成功',remove)
+        }
+    )
+}
+/**
 * 如果扩展程序操作指定了在用户点击当前标签页时显示的弹出式窗口，则不会发送 action.onClicked 事件
 * */
 chrome.action.onClicked.addListener(async (tab) => {
-    console.log("This is a background script!")
     draw();
-    console.log(tab.url.startsWith('https://www.baidu.com'))
-    if (tab.url.startsWith('https://www.baidu.com')) {
+    registerScripts()
+    return;
+    if (tab.url.startsWith(targetPageUrl)) {
         const prevState = await chrome.action.getBadgeText({ tabId: tab.id });
         const nextState = prevState === '🐒' ? '👌🏻' : '🐒'
         await chrome.action.setBadgeText({
@@ -54,6 +115,18 @@ chrome.action.onClicked.addListener(async (tab) => {
                 files: ["index.css"],
                 target: { tabId: tab.id,allFrames : true, },
             });
+            await chrome.scripting
+                .executeScript({
+                    target : {tabId : tab.id,allFrames : true,},
+                    files : [ "bg.js" ],
+                })
+                .then(() => {
+                    console.log("js 注入成功")
+                    setTimeout(()=>{
+                        console.log('开始删除css')
+                        removeScripts()
+                    })
+                });
         }else {
             await chrome.scripting.removeCSS({
                 files: ["index.css"],

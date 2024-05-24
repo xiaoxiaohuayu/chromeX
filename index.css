@@ -1,5 +1,17 @@
+body{
+    background-color: #000 !important;
+    position: absolute  !important;
+    top: 0  !important;
+    left: 0  !important;
+    width: 100%  !important;
+    height: 100%  !important;
+    overflow: hidden  !important;
+}
 #s-top-left{
     display: none;
+}
+.s-top-wrap{
+    background: #fff0 !important;
 }
 #bottom_layer{
     display: none;
