@@ -9,14 +9,15 @@
     },
     "permissions": ["activeTab","scripting","commands","clipboardRead","clipboardWrite"],
     "host_permissions":["<all_urls>"],
+    "options_page": "./page/extension_page.html",
     "background": {
         "service_worker": "background.js"
     },
     "content_scripts": [
         {
-            "js": ["scripts/content.js"],
+            "js": ["scripts/Sortable.js","scripts/gg.js"],
             "matches": [
-                "https://www.baidu.com/*"
+                "<all_urls>"
             ]
         }
     ],

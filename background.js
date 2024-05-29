@@ -28,9 +28,10 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
     getRegisteredScripts()
     // tabid
     chrome.tabs.query({},(tab)=>{
-        console.log('tabid',tab)
         tab.map((e)=>{
-            if(e.active && e.url.startsWith(targetPageUrl)){
+            console.log('tabid',tab,e.url)
+
+            if(e.active && e.url && e.url.startsWith(targetPageUrl)){
                 tabId = e.id
             }
         })
@@ -54,14 +55,15 @@ chrome.runtime.onInstalled.addListener(() => {
 * 注册
 * */
 const registerScripts = () =>{
-    console.log('开始注册css')
+    console.log('开始注册css-js')
     chrome.scripting.registerContentScripts(
         [
             {
-                id:'hao',
                 allFrames: true,
+                id:'hao-script',
                 css:['index.css'],
-                runAt:"document_start",
+                // js: ['bg.js','./scripts/Sortable.js','./scripts/gg.js'],
+                runAt:"document_idle",// https://developer.chrome.com/docs/extensions/reference/api/extensionTypes?hl=zh-cn#type-RunAt
                 matches: ["https://*.baidu.com/*"]
             }
         ],
@@ -96,12 +98,13 @@ const removeScripts = () =>{
         }
     )
 }
+registerScripts()
+
 /**
 * 如果扩展程序操作指定了在用户点击当前标签页时显示的弹出式窗口，则不会发送 action.onClicked 事件
 * */
 chrome.action.onClicked.addListener(async (tab) => {
-    draw();
-    registerScripts()
+    // draw();
     return;
     if (tab.url.startsWith(targetPageUrl)) {
         const prevState = await chrome.action.getBadgeText({ tabId: tab.id });
