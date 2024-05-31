@@ -7,7 +7,7 @@
 //        "default_popup": "hello.html",
         "default_icon": "hello_extensions.png"
     },
-    "permissions": ["activeTab","scripting","commands","clipboardRead","clipboardWrite"],
+    "permissions": ["activeTab","scripting","commands","clipboardRead","clipboardWrite","contextMenus","notifications","storage"],
     "host_permissions":["<all_urls>"],
     "options_page": "./page/extension_page.html",
     "background": {
@@ -15,7 +15,7 @@
     },
     "content_scripts": [
         {
-            "js": ["scripts/Sortable.js","scripts/gg.js"],
+            "js": ["scripts/Sortable.js","scripts/lodash.min.js","scripts/gg.js"],
             "matches": [
                 "<all_urls>"
             ]

@@ -22,22 +22,63 @@ function draw() {
 
 }
 let tabId = null;
-const TABID= 'hao'
+let tempString = ''
+
 chrome.windows.onFocusChanged.addListener((windowId) => {
-    console.log('当前激活页面windowId',windowId)
-    getRegisteredScripts()
+    // getRegisteredScripts()
     // tabid
-    chrome.tabs.query({},(tab)=>{
-        tab.map((e)=>{
-            console.log('tabid',tab,e.url)
-
-            if(e.active && e.url && e.url.startsWith(targetPageUrl)){
-                tabId = e.id
-            }
-        })
-    })
+    // chrome.tabs.query({},(tab)=>{
+    //     tab.map((e)=>{
+    //         console.log('tabid',tab,e.url)
+    //
+    //         if(e.active && e.url && e.url.startsWith(targetPageUrl)){
+    //             tabId = e.id
+    //         }
+    //     })
+    // })
 });
-
+/**
+ * 右击菜单
+ * */
+chrome.contextMenus.create({
+    id: "collection",
+    title: "添加到收藏",
+    contexts: ["all"]
+});
+chrome.contextMenus.onClicked.addListener(function(info, tab) {
+    if (info.menuItemId === "collection") {
+        // 处理菜单项点击事件
+        console.log("菜单项被点击了",tempString);
+        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, { greeting: "从bg到gg" }, function(response) {
+                console.log(response.farewell); // 内容脚本的响应
+                // chrome.storage.sync.set({key: value}, function() {
+                //     console.log('数据已保存');
+                // });
+            });
+        });
+    }
+});
+/**
+ * 监听消息
+ * */
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    console.log('监听到消息')
+    if (message.action === 'saveText') {
+        console.log('消息内容',message.text)
+        chrome.storage.local.set({ key: message.text }).then(() => {
+            console.log("Value is set");
+            sendResponse({message:'我已经存进去了'})
+        });
+        chrome.storage.local.get(["key"]).then((result) => {
+            console.log("selectedTextis ", result.key);
+        });
+    }
+    return true; // 保证异步回调能够被调用
+});
+chrome.storage.local.get(null, function(data) {
+    console.log('Local 存储数据:', data);
+});
 chrome.runtime.onInstalled.addListener(() => {
     chrome.action.setBadgeText({
         text: "🐒",

@@ -6,8 +6,7 @@ console.log('gg')
 // 单击事件
 document.addEventListener('click', function(event) {
     // 处理单击事件
-    console.log('处理单击事件', chrome.runtime.getURL('./page/extension_page.html'))
-    window.open(chrome.runtime.getURL('./page/extension_page.html'))
+    // console.log('处理单击事件', chrome.runtime.getURL('page/extension_page.html'))
 });
 
 // 双击事件
@@ -15,16 +14,22 @@ document.addEventListener('dblclick', function(event) {
     // 处理双击事件
     console.log('处理双击事件', event)
 });
-// 监听选区变化事件
-document.addEventListener('selectionchange', function() {
+const selectionchangeCallBack = function (){
     // 获取选中的文本内容
     var selectedText = window.getSelection().toString();
-
     // 如果有文本被选中
     if (selectedText.length > 0) {
         console.log('选中的文本:', selectedText);
-        // 在这里可以执行您需要的操作,如显示工具提示、复制文本等
+        chrome.runtime.sendMessage({ action: 'saveText', text: selectedText }, function(response) {
+            console.log(response.message);
+        });
     }
+}
+// 监听选区变化事件
+document.addEventListener('selectionchange', _.throttle(selectionchangeCallBack,1000));
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    console.log(message.greeting); // 后台脚本发送的消息
+    sendResponse({ farewell: "gg到bg" }); // 向后台脚本发送响应
 });
 // 鼠标移动事件
 // document.addEventListener('mousemove', function(event) {
