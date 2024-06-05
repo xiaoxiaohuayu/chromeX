@@ -1,8 +1,5 @@
 
-// const el = document.querySelector('#lg')
-// const sortable = new Sortable(el)
-console.log('gg')
-
+let selectedText = '';
 // 单击事件
 document.addEventListener('click', function(event) {
     // 处理单击事件
@@ -16,28 +13,33 @@ document.addEventListener('dblclick', function(event) {
 });
 const selectionchangeCallBack = function (){
     // 获取选中的文本内容
-    var selectedText = window.getSelection().toString();
+    selectedText = window.getSelection().toString();
     // 如果有文本被选中
     if (selectedText.length > 0) {
         console.log('选中的文本:', selectedText);
-        chrome.runtime.sendMessage({ action: 'saveText', text: selectedText }, function(response) {
-            console.log(response.message);
-        });
     }
 }
 // 监听选区变化事件
 document.addEventListener('selectionchange', _.throttle(selectionchangeCallBack,1000));
+
+
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    console.log(message.greeting); // 后台脚本发送的消息
-    sendResponse({ farewell: "gg到bg" }); // 向后台脚本发送响应
+    console.log(message); // 后台脚本发送的消息
+    const  {menuItemId} = message || {}
+    if(menuItemId === "collection"){
+        const uuid = window.crypto?.randomUUID()
+        let data = {
+            uuid,
+            key:uuid,
+            text:selectedText
+        }
+        chrome.runtime.sendMessage({ action: 'saveText', data}, function(response) {
+            console.log(response.message);
+        });
+    }
+    sendResponse({message:'开始保存'})
 });
-// 鼠标移动事件
-// document.addEventListener('mousemove', function(event) {
-//     // 获取鼠标当前位置
-//     let x = event.clientX;
-//     let y = event.clientY;
-//     console.log('获取鼠标当前位置', x,y)
-// });
+
 // 鼠标滚轮事件
 document.addEventListener('wheel', function(event) {
     // 获取滚轮滚动方向

@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>extension_page</title>
+    <title>小记选项配置页面</title>
 </head>
 <body>
-<h1>extension_page.html</h1>
+<!--css 引入-->
+<link rel="stylesheet" href="index.css">
+    <div class="container">
+        <div class="components">
+            <div class="switch">
+                <div class="switch__1">
+                    <input id="switch-1" type="checkbox">
+                    <label for="switch-1"></label>
+                </div>
+            </div>
+            <div class="search">
+                <input type="text" class="search__input" placeholder="Search...">
+                <div class="search__icon">
+                    <ion-icon name="search"></ion-icon>
+                </div>
+            </div>
+            <div class="btn btn__primary" id="clear"><p>清除本地所有存储</p></div>
+            <div class="btn btn__secondary"><p>Button</p></div>
+            <div class="clock">
+                <div class="hand hours"></div>
+                <div class="hand minutes"></div>
+                <div class="hand seconds"></div>
+                <div class="point"></div>
+                <div class="marker">
+                    <span class="marker__1"></span>
+                    <span class="marker__2"></span>
+                    <span class="marker__3"></span>
+                    <span class="marker__4"></span>
+                </div>
+            </div>
+            <div id="list" class="list-box">
+
+            </div>
+        </div>
+    </div>
 </body>
+<script src="index.js"></script>
 </html>
