@@ -34,10 +34,12 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
             text:selectedText
         }
         chrome.runtime.sendMessage({ action: 'saveText', data}, function(response) {
-            console.log(response.message);
+            console.log(response?.message);
         });
     }
     sendResponse({message:'开始保存'})
+    // 防止在异步回调函数中发生错误时浏览器抛出异常
+    return true;
 });
 
 // 鼠标滚轮事件
